@@ -10,10 +10,20 @@ export default function NewEntry() {
         setLoading(true);
         setMessage("");
 
+        const {
+            data: { user },
+        } = await supabase.auth.getUser();
+
+        if (!user) {
+            setMessage("You must be signed in to create a journal entry.");
+            setLoading(false);
+            return;
+        }
+
         const { data, error } = await supabase
         .from("journal_entries")
         .insert({
-            user_id: "00000000-0000-0000-0000-000000000000",
+            user_id: user.id,
             content: content,
         });
 
